@@ -1,21 +1,33 @@
 <h1>Welcome to AXA Charts</h1>
-
+<!-- <canvas id="myChart" ></canvas> -->
+ <div>
+  
+ </div>
+<p-card class="chart-card" header="Stock Chart">
+  <div class="card-content">
+    <canvas class="chart" id="myChart"></canvas>
+  </div>
+</p-card>
 <div *ngIf="dataRetrieved">
-  <canvas id="myChart"></canvas>
-
-  <p-table
+  
+  <p-card class="table-card">
+    <p-table
     [value]="chartData"
     editable="true"
     editMode="row"
     dataKey="date"
+    stripedRows 
+    [paginator]="true"
+    [rows]="10"
     (onRowEditSave)="saveRowEdit($event)"
     #dt
+    class="table"
   >
     <ng-template pTemplate="header">
       <tr>
-        <th>Date</th>
-        <th>Stock</th>
-        <th>Action</th>
+        <th pSortableColumn="timestamp" [width]="'50%'">Date <p-sortIcon field="code" /></th>
+        <th pSortableColumn="stock" [width]="'20%'">Stock <p-sortIcon field="code" /></th>
+        <th [width]="'10%'">Action</th>
       </tr>
     </ng-template>
   
@@ -39,7 +51,7 @@
           </p-cellEditor>
         </td>
   
-        <td>
+        <td class="end-row">
           <button
             *ngIf="editingRow !== rowData"
             pButton
@@ -67,6 +79,7 @@
       </tr>
     </ng-template>
   </p-table>
-</div>
+</p-card>
+  
   
 <p-toast></p-toast>

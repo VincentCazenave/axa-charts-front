@@ -1,0 +1,23 @@
+.end-row {
+    display: flex;
+    justify-content: end;
+}
+
+.card {
+    margin-bottom: 1rem;
+}
+
+.chart {
+    width: 100%;
+    height: 400px;
+}
+
+:host::ng-deep {
+    .chart-card {
+        width: 50%;
+        height: fit-content;
+        margin: 0 auto;
+        display: flex;
+        margin-bottom: 1rem;
+    }
+}

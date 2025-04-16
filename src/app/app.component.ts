@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, OnInit, PLATFORM_ID, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, PLATFORM_ID, OnDestroy, AfterViewInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { ChartsService } from './core/services/charts.service';
@@ -14,18 +14,19 @@ import {FormsModule} from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { MessagesModule } from 'primeng/messages';
 import { ToastModule } from 'primeng/toast';
+import { CardModule } from 'primeng/card';
 
 @Component({
   selector: 'app-root',
   providers: [
     MessageService, 
   ],
-  imports: [RouterOutlet, HttpClientModule, CommonModule, ToastModule, MessagesModule, ButtonModule, ChartModule, TableModule, InputTextModule, DatePipe, FormsModule, ],
+  imports: [RouterOutlet, HttpClientModule, CommonModule, CardModule,ToastModule, MessagesModule, ButtonModule, ChartModule, TableModule, InputTextModule, DatePipe, FormsModule, ],
   
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent implements OnInit, OnDestroy{
+export class AppComponent implements OnInit, OnDestroy, AfterViewInit{
   title = 'axa-charts';
   public chart: any;
   chartConfig: any;
@@ -72,6 +73,9 @@ export class AppComponent implements OnInit, OnDestroy{
   }
 
   ngOnInit(): void {
+  }
+
+  ngAfterViewInit(): void {
     this.getChartData();
   }
 
@@ -90,7 +94,6 @@ export class AppComponent implements OnInit, OnDestroy{
         this.chartData = data;
         const labels = this.chartData.map((item: any) => new Date(item.timestamp));
         const stockData = this.chartData.map((item: any) => item.stock);
-        console.log(labels, stockData);
         this.createChart(labels, stockData);
         this.cd.detectChanges();
       },
@@ -102,6 +105,7 @@ export class AppComponent implements OnInit, OnDestroy{
 
   createChart(labels: Date[], stockData: number[]): void {
     const canvas = document.getElementById('myChart') as HTMLCanvasElement;
+    console.log(canvas, "mon canva")
     if (this.chart) this.chart.destroy();
   
     this.chart = new Chart(canvas, {
@@ -113,6 +117,12 @@ export class AppComponent implements OnInit, OnDestroy{
           data: stockData,
           borderColor: 'rgb(75, 192, 192)',
           fill: false,
+          borderWidth: 2, 
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          pointBackgroundColor: 'rgb(75, 192, 192)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgb(75, 192, 192)'
         }]
       },
       options: {
@@ -125,12 +135,18 @@ export class AppComponent implements OnInit, OnDestroy{
               tooltipFormat: 'll HH:mm:ss',
               displayFormats: { second: 'HH:mm:ss' },
             },
+            grid: {
+              display: false,
+            }
           },
           y: {
             title: {
               display: true,
               text: 'Stock Value',
             },
+            grid: {
+              display: false,
+            }
           },
         },
       },
