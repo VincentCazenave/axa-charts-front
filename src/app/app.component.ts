@@ -29,20 +29,8 @@ import { CardModule } from 'primeng/card';
 export class AppComponent implements OnInit, OnDestroy, AfterViewInit{
   title = 'axa-charts';
   public chart: any;
-  chartConfig: any;
-  basicOptions: any;
   platformId = inject(PLATFORM_ID);
   labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-  data: any = {
-  labels: this.labels,
-  datasets: [{
-    label: 'My First Dataset',
-    data: [65, 59, 80, 81, 56, 55, 40],
-    fill: false,
-    borderColor: 'rgb(75, 192, 192)',
-    tension: 0.1
-    }]
-  };
   dataRetrieved = false;
   editingRow: any = null;
   public chartLabels: string[] = [];
@@ -79,12 +67,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit{
     this.getChartData();
   }
 
-
   ngOnDestroy(): void {
     this.stop$.next(null);
     this.stop$.complete();  
   }
 
+  // Get the data to create the chart
   getChartData(): void {
     this.chartService.getRandomData(20)
     .pipe(takeUntil(this.stop$))
@@ -103,6 +91,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit{
     });
   }
 
+  // Function to create the chart from the data and the canva
   createChart(labels: Date[], stockData: number[]): void {
     const canvas = document.getElementById('myChart') as HTMLCanvasElement;
     console.log(canvas, "mon canva")
@@ -156,12 +145,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit{
   onRowEditSave(entry: any, index: number) {
     this.updateChartFromTable();
   }
-
+  
   saveRowEdit(event: any) {
     const updatedRow = event.data;
     this.updateChartFromTable();
   }
 
+  // Update edit from the data that has been updated
   updateChartFromTable() {
     const labels = this.chartData.map((item: any) => new Date(item.timestamp));
     const data = this.chartData.map((item: any) => item.stock);
@@ -171,21 +161,25 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit{
     this.chart.update();
   }
 
+  // Start the edit
   startEdit(rowData: any, dt: any) {
     this.editingRow = rowData;
     dt.initRowEdit(rowData);
   }
   
+  // Save the edit
   saveEdit(rowData: any) {
     this.editingRow = null;
     this.updateChartFromTable();
   }
   
+  // Cancel the pending edit
   cancelEdit(dt: any) {
     this.editingRow = null;
     dt.cancelRowEdit(this.editingRow);
   }
 
+  // Allow to edit with the enter button
   onEnterEdit(rowData: any, rowIndex: number) {
     this.chartData[rowIndex].stock = rowData.stock;
     this.updateChartFromTable();
