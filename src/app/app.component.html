@@ -1,0 +1,72 @@
+<h1>Welcome to AXA Charts</h1>
+
+<div *ngIf="dataRetrieved">
+  <canvas id="myChart"></canvas>
+
+  <p-table
+    [value]="chartData"
+    editable="true"
+    editMode="row"
+    dataKey="date"
+    (onRowEditSave)="saveRowEdit($event)"
+    #dt
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Date</th>
+        <th>Stock</th>
+        <th>Action</th>
+      </tr>
+    </ng-template>
+  
+    <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-editing="editing">
+      <tr [pEditableRow]="rowData">
+        <td>{{ rowData.timestamp | date:'MMM d, y, HH:mm:ss' }}</td>
+  
+        <td pEditableColumn>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input
+                type="number"
+                pInputText
+                [(ngModel)]="rowData.stock"
+                (keydown.enter)="onEnterEdit(rowData, rowIndex)"
+              />
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{ rowData.stock }}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+  
+        <td>
+          <button
+            *ngIf="editingRow !== rowData"
+            pButton
+            type="button"
+            icon="pi pi-pencil"
+            (click)="startEdit(rowData, dt)"
+          ></button>
+      
+          <button
+            *ngIf="editingRow === rowData"
+            pButton
+            type="button"
+            icon="pi pi-check"
+            (click)="saveEdit(rowData)"
+          ></button>
+      
+          <button
+            *ngIf="editingRow === rowData"
+            pButton
+            type="button"
+            icon="pi pi-times"
+            (click)="cancelEdit(dt)"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+  
+<p-toast></p-toast>
