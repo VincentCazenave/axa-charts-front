@@ -14,9 +14,5 @@ export class ChartsService extends AbstractResourceService{
     const params = new HttpParams().set('numEntries', numEntries.toString());
     return this.http.get<ChartData[]>(`${this.endpoint}random-data`, { params });
   }
-
-  getFalseCall(): Observable<any> {
-    return this.http.get('http://non-existent-url.com');
-  }
   
 }
